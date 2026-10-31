@@ -63,4 +63,11 @@ public async Task<List<Student>> SearchByNameAsync(string search)
             .Where(s => s.Name.Contains(search))
             .ToListAsync();
     }
+    public async Task<List<Student>> GetByDepartmentIdAsync(int departmentId)
+    {
+        return await _context.Students
+            .Include(s => s.Department)
+            .Where(s => s.DepartmentId == departmentId)
+            .ToListAsync();
+    }
 }

@@ -120,6 +120,32 @@
   },
   {
     "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "Method": "GetStudentsByDepartment",
+    "RelativePath": "api/students/department",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "departmentId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WebApiPractice.DTOs.StudentDto, WebApiPractice, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.StudentController",
     "Method": "SearchStudents",
     "RelativePath": "api/students/search",
     "HttpMethod": "GET",
