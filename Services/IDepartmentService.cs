@@ -1,4 +1,4 @@
-using WebApiPractice.DTOs;
+/*using WebApiPractice.DTOs;
 
 namespace WebApiPractice.Services;
 
@@ -10,3 +10,4 @@ public interface IDepartmentService
     Task<DepartmentDto> UpdateAsync(int id, CreateDepartmentDto dto, CancellationToken cancellationToken);
     Task DeleteAsync(int id, CancellationToken cancellationToken);
 }
+*/

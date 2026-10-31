@@ -4,27 +4,55 @@ using WebApiPractice.Models;
 
 namespace WebApiPractice.Repositories;
 
-public class StudentRepository(ApplicationDbContext context) : IStudentRepository
+public class StudentRepository : IStudentRepository
 {
-    public async Task<(IReadOnlyList<Student> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    private readonly ApplicationDbContext _context;
+
+    public StudentRepository(ApplicationDbContext context)
     {
-        var query = context.Students.AsNoTracking().Include(student => student.Department).OrderBy(student => student.Name);
-        var totalCount = await query.CountAsync(cancellationToken);
-        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-        return (items, totalCount);
+        _context = context;
     }
 
-    public Task<Student?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
-        context.Students.Include(student => student.Department).FirstOrDefaultAsync(student => student.Id == id, cancellationToken);
+    public async Task<List<Student>> GetAllAsync()
+    {
+        return await _context.Students
+            .Include(s => s.Department)
+            .ToListAsync();
+    }
 
-    public Task<bool> EmailExistsAsync(string email, int? excludedId, CancellationToken cancellationToken) =>
-        context.Students.AnyAsync(student => student.Email == email && (!excludedId.HasValue || student.Id != excludedId.Value), cancellationToken);
+    public async Task<Student?> GetByIdAsync(int id)
+    {
+        return await _context.Students
+            .Include(s => s.Department)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
 
-    public Task AddAsync(Student student, CancellationToken cancellationToken) => context.Students.AddAsync(student, cancellationToken).AsTask();
 
-    public void Update(Student student) => context.Students.Update(student);
 
-    public void Delete(Student student) => context.Students.Remove(student);
+    public async Task<bool> EmailExistsAsync(
+        string email,
+        int? excludeStudentId = null)
+    {
+        return await _context.Students.AnyAsync(s =>
+            s.Email == email &&
+            s.Id != excludeStudentId);
+    }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken) => context.SaveChangesAsync(cancellationToken);
+    public async Task AddAsync(Student student)
+    {
+        await _context.Students.AddAsync(student);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Student student)
+    {
+        _context.Students.Update(student);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Student student)
+    {
+        _context.Students.Remove(student);
+        await _context.SaveChangesAsync();
+    }
 }

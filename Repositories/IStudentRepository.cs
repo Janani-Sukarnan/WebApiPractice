@@ -4,11 +4,17 @@ namespace WebApiPractice.Repositories;
 
 public interface IStudentRepository
 {
-    Task<(IReadOnlyList<Student> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
-    Task<Student?> GetByIdAsync(int id, CancellationToken cancellationToken);
-    Task<bool> EmailExistsAsync(string email, int? excludedId, CancellationToken cancellationToken);
-    Task AddAsync(Student student, CancellationToken cancellationToken);
-    void Update(Student student);
-    void Delete(Student student);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<List<Student>> GetAllAsync();
+
+    Task<Student?> GetByIdAsync(int id);
+
+    Task<bool> EmailExistsAsync(
+        string email,
+        int? excludeStudentId = null);
+
+    Task AddAsync(Student student);
+
+    Task UpdateAsync(Student student);
+
+    Task DeleteAsync(Student student);
 }

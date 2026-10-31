@@ -10,7 +10,5 @@ public class StudentDto
 
     public int Age { get; set; }
 
-    public int? DepartmentId { get; set; }
-
     public string? DepartmentName { get; set; }
 }

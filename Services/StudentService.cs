@@ -4,58 +4,107 @@ using WebApiPractice.Repositories;
 
 namespace WebApiPractice.Services;
 
-public class StudentService(IStudentRepository repository) : IStudentService
+public class StudentService : IStudentService
 {
-    public async Task<PagedResult<StudentDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    private readonly IStudentRepository _repository;
+    private readonly ILogger<StudentService> _logger;
+
+    public StudentService(
+        IStudentRepository repository,
+        ILogger<StudentService> logger)
     {
-        ValidatePage(pageNumber, pageSize);
-        var (items, totalCount) = await repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
-        return new PagedResult<StudentDto>
+        _repository = repository;
+        _logger = logger;
+    }
+
+    public async Task<List<StudentDto>> GetAllStudentsAsync()
+    {
+        var students = await _repository.GetAllAsync();
+
+        return students.Select(s => new StudentDto
         {
-            Items = items.Select(Map).ToList(), PageNumber = pageNumber, PageSize = pageSize, TotalCount = totalCount
+            Id = s.Id,
+            Name = s.Name,
+            Email = s.Email,
+            Age = s.Age,
+            DepartmentName = s.Department?.DepartmentName
+        }).ToList();
+    }
+
+    public async Task<StudentDto?> GetStudentByIdAsync(int id)
+    {
+        var student = await _repository.GetByIdAsync(id);
+
+        if (student is null)
+            return null;
+
+        return MapToDto(student);
+    }
+
+    public async Task<StudentDto> AddStudentAsync(CreateStudentDto studentDto)
+    {
+        var student = new Student
+        {
+            Name = studentDto.Name,
+            Email = studentDto.Email,
+            Age = studentDto.Age
         };
+
+        await _repository.AddAsync(student);
+
+        _logger.LogInformation(
+            "Student created successfully with ID {StudentId}",
+            student.Id);
+
+        return MapToDto(student);
     }
 
-    public async Task<StudentDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<StudentDto?> UpdateStudentAsync(
+        int id,
+        UpdateStudentDto studentDto)
     {
-        var student = await repository.GetByIdAsync(id, cancellationToken);
-        return student is null ? null : Map(student);
+        var student = await _repository.GetByIdAsync(id);
+
+        if (student is null)
+            return null;
+
+        student.Name = studentDto.Name;
+        student.Email = studentDto.Email;
+        student.Age = studentDto.Age;
+
+        await _repository.UpdateAsync(student);
+
+        return MapToDto(student);
     }
 
-    public async Task<StudentDto> CreateAsync(CreateStudentDto dto, CancellationToken cancellationToken)
+    public async Task<bool> DeleteStudentAsync(int id)
     {
-        if (await repository.EmailExistsAsync(dto.Email, null, cancellationToken)) throw new InvalidOperationException("A student with this email already exists.");
-        var student = new Student { Name = dto.Name.Trim(), Email = dto.Email.Trim(), Age = dto.Age, DepartmentId = dto.DepartmentId };
-        await repository.AddAsync(student, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
-        return Map(student);
+        var student = await _repository.GetByIdAsync(id);
+
+        if (student is null)
+            return false;
+
+        await _repository.DeleteAsync(student);
+
+        return true;
     }
 
-    public async Task<StudentDto> UpdateAsync(int id, UpdateStudentDto dto, CancellationToken cancellationToken)
+    public Task<bool> EmailExistsAsync(
+        string email,
+        int? excludeStudentId = null)
     {
-        var student = await repository.GetByIdAsync(id, cancellationToken) ?? throw new KeyNotFoundException("Student not found.");
-        if (await repository.EmailExistsAsync(dto.Email, id, cancellationToken)) throw new InvalidOperationException("A student with this email already exists.");
-        student.Name = dto.Name.Trim(); student.Email = dto.Email.Trim(); student.Age = dto.Age; student.DepartmentId = dto.DepartmentId;
-        repository.Update(student);
-        await repository.SaveChangesAsync(cancellationToken);
-        return Map(student);
+        return _repository.EmailExistsAsync(email, excludeStudentId);
     }
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    private static StudentDto MapToDto(Student student)
     {
-        var student = await repository.GetByIdAsync(id, cancellationToken) ?? throw new KeyNotFoundException("Student not found.");
-        repository.Delete(student);
-        await repository.SaveChangesAsync(cancellationToken);
-    }
-
-    private static StudentDto Map(Student student) => new()
-    {
-        Id = student.Id, Name = student.Name, Email = student.Email, Age = student.Age,
-        DepartmentId = student.DepartmentId, DepartmentName = student.Department?.Name
-    };
-
-    private static void ValidatePage(int pageNumber, int pageSize)
-    {
-        if (pageNumber < 1 || pageSize is < 1 or > 100) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page number must be positive and page size must be between 1 and 100.");
+        return new StudentDto
+        {
+            Id = student.Id,
+            Name = student.Name,
+            Email = student.Email,
+            Age = student.Age,
+            DepartmentName = student.Department?.DepartmentName
+        };
     }
 }

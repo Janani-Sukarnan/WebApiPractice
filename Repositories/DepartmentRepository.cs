@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+/*using Microsoft.EntityFrameworkCore;
 using WebApiPractice.Data;
 using WebApiPractice.Models;
 
@@ -27,3 +27,4 @@ public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRep
 
     public Task SaveChangesAsync(CancellationToken cancellationToken) => context.SaveChangesAsync(cancellationToken);
 }
+*/

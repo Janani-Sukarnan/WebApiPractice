@@ -1,4 +1,4 @@
-using WebApiPractice.DTOs;
+/*using WebApiPractice.DTOs;
 using WebApiPractice.Models;
 using WebApiPractice.Repositories;
 
@@ -56,3 +56,4 @@ public class DepartmentService(IDepartmentRepository repository) : IDepartmentSe
         if (pageNumber < 1 || pageSize is < 1 or > 100) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page number must be positive and page size must be between 1 and 100.");
     }
 }
+*/

@@ -4,14 +4,14 @@ namespace WebApiPractice.DTOs;
 
 public class UpdateStudentDto
 {
-    [Required, MaxLength(150)]
+    [Required]
+    [StringLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [Required, EmailAddress, MaxLength(255)]
+    [Required]
+    [EmailAddress]
     public string Email { get; set; } = string.Empty;
 
-    [Range(1, 150)]
+    [Range(17, 60)]
     public int Age { get; set; }
-
-    public int? DepartmentId { get; set; }
 }

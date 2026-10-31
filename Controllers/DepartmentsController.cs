@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+/*using Microsoft.AspNetCore.Mvc;
 using WebApiPractice.DTOs;
 using WebApiPractice.Services;
 
@@ -37,3 +37,4 @@ public class DepartmentsController(IDepartmentService service) : ControllerBase
         return NoContent();
     }
 }
+*/

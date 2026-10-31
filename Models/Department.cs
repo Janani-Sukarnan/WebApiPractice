@@ -2,9 +2,11 @@ namespace WebApiPractice.Models;
 
 public class Department
 {
-    public int Id { get; set; }
+    public int DepartmentId { get; set; }
 
-    public required string Name { get; set; }
+    public string DepartmentName { get; set; } = string.Empty;
 
-    public ICollection<Student> Students { get; set; } = new List<Student>();
+    // Navigation property
+    public ICollection<Student> Students { get; set; }
+        = new List<Student>();
 }

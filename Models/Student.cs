@@ -4,13 +4,15 @@ public class Student
 {
     public int Id { get; set; }
 
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public required string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     public int Age { get; set; }
 
+    // Foreign key
     public int? DepartmentId { get; set; }
 
-    public Department? Department { get; set; }
+    // Navigation property
+    public Department? Department { get; set; } = null!;
 }
