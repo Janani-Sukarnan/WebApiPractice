@@ -27,6 +27,32 @@
   },
   {
     "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "GetAllDepartments",
+    "RelativePath": "api/departments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
     "Method": "GetDepartmentById",
     "RelativePath": "api/departments/{id}",
     "HttpMethod": "GET",
