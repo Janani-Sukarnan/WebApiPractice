@@ -18,32 +18,86 @@
         "tags": [
           "Student"
         ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
                 }
               }
             }
@@ -327,6 +381,63 @@
           }
         }
       }
+    },
+    "/api/students/paged": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfStudentDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -349,6 +460,49 @@
           "age": {
             "maximum": 30,
             "minimum": 19,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "PagedResultOfStudentDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentDto"
+            }
+          },
+          "pageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",

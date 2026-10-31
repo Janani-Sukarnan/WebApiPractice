@@ -107,6 +107,7 @@ public class StudentService : IStudentService
             DepartmentName = student.Department?.DepartmentName
         };
     }
+
     public async Task<List<StudentDto>> SearchStudentsByNameAsync(string search)
     {
         var students = await _repository.SearchByNameAsync(search);
@@ -121,8 +122,7 @@ public class StudentService : IStudentService
         }).ToList();
     }
 
-
-public async Task<List<StudentDto>> GetStudentsByDepartmentIdAsync(int departmentId)
+    public async Task<List<StudentDto>> GetStudentsByDepartmentIdAsync(int departmentId)
     {
         var students = await _repository.GetByDepartmentIdAsync(departmentId);
 
@@ -136,16 +136,10 @@ public async Task<List<StudentDto>> GetStudentsByDepartmentIdAsync(int departmen
         }).ToList();
     }
 
- public async Task<PagedResult<StudentDto>> GetPagedStudentsAsync(
+    public async Task<PagedResult<StudentDto>> GetPagedStudentsAsync(
     int pageNumber,
     int pageSize)
     {
-        if (pageNumber < 1)
-            throw new ArgumentException("Page number must be at least 1.");
-
-        if (pageSize < 1 || pageSize > 100)
-            throw new ArgumentException(
-                "Page size must be between 1 and 100.");
 
         var students = await _repository.GetPagedAsync(
             pageNumber,
@@ -169,5 +163,46 @@ public async Task<List<StudentDto>> GetStudentsByDepartmentIdAsync(int departmen
             PageSize = pageSize,
             TotalCount = totalCount
         };
+
+
     }
+
+    public async Task<PagedResult<StudentDto>> GetFilteredAndPagedStudentsAsync(
+    string? search,
+    int? departmentId,
+    string? sortBy,
+    string? sortOrder,
+    int pageNumber,
+    int pageSize)
+    {
+        var students = await _repository.GetFilteredAndPagedAsync(
+            search,
+            departmentId,
+            sortBy ?? "id",
+            sortOrder ?? "asc",
+            pageNumber,
+            pageSize);
+
+        var totalCount = await _repository.GetFilteredCountAsync(
+            search,
+            departmentId);
+
+        var studentDtos = students.Select(s => new StudentDto
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Email = s.Email,
+            Age = s.Age,
+            DepartmentName = s.Department?.DepartmentName
+        }).ToList();
+
+        return new PagedResult<StudentDto>
+        {
+            Items = studentDtos,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+    }
+
 }

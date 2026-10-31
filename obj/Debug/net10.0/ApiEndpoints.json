@@ -47,6 +47,57 @@
   },
   {
     "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "Method": "GetStudents",
+    "RelativePath": "api/students",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "departmentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebApiPractice.DTOs.PagedResult\u00601[[WebApiPractice.DTOs.StudentDto, WebApiPractice, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.StudentController",
     "Method": "GetStudentById",
     "RelativePath": "api/students/{id}",
     "HttpMethod": "GET",
@@ -135,6 +186,37 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.List\u00601[[WebApiPractice.DTOs.StudentDto, WebApiPractice, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "Method": "GetPagedStudents",
+    "RelativePath": "api/students/paged",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebApiPractice.DTOs.PagedResult\u00601[[WebApiPractice.DTOs.StudentDto, WebApiPractice, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
