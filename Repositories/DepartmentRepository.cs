@@ -1,30 +1,54 @@
-/*using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebApiPractice.Data;
 using WebApiPractice.Models;
 
 namespace WebApiPractice.Repositories;
 
-public class DepartmentRepository(ApplicationDbContext context) : IDepartmentRepository
+public class DepartmentRepository : IDepartmentRepository
 {
-    public async Task<(IReadOnlyList<Department> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    private readonly ApplicationDbContext _context;
+
+    public DepartmentRepository(ApplicationDbContext context)
     {
-        var query = context.Departments.AsNoTracking().OrderBy(department => department.Name);
-        var totalCount = await query.CountAsync(cancellationToken);
-        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-        return (items, totalCount);
+        _context = context;
     }
 
-    public Task<Department?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
-        context.Departments.Include(department => department.Students).FirstOrDefaultAsync(department => department.Id == id, cancellationToken);
+    public async Task<List<Department>> GetAllAsync()
+    {
+        return await _context.Departments
+            .Include(d => d.Students)
+            .OrderBy(d => d.DepartmentId)
+            .ToListAsync();
+    }
 
-    public Task AddAsync(Department department, CancellationToken cancellationToken) => context.Departments.AddAsync(department, cancellationToken).AsTask();
+    public async Task<Department?> GetByIdAsync(int id)
+    {
+        return await _context.Departments
+            .Include(d => d.Students)
+            .FirstOrDefaultAsync(d => d.DepartmentId == id);
+    }
 
-    public void Update(Department department) => context.Departments.Update(department);
+    public async Task<bool> ExistsByNameAsync(string departmentName)
+    {
+        return await _context.Departments
+            .AnyAsync(d => d.DepartmentName == departmentName);
+    }
 
-    public void Delete(Department department) => context.Departments.Remove(department);
+    public async Task AddAsync(Department department)
+    {
+        await _context.Departments.AddAsync(department);
+        await _context.SaveChangesAsync();
+    }
 
-    public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) => context.Departments.AnyAsync(department => department.Id == id, cancellationToken);
+    public async Task UpdateAsync(Department department)
+    {
+        _context.Departments.Update(department);
+        await _context.SaveChangesAsync();
+    }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken) => context.SaveChangesAsync(cancellationToken);
+    public async Task DeleteAsync(Department department)
+    {
+        _context.Departments.Remove(department);
+        await _context.SaveChangesAsync();
+    }
 }
-*/

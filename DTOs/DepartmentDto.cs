@@ -2,9 +2,9 @@ namespace WebApiPractice.DTOs;
 
 public class DepartmentDto
 {
-    public int Id { get; set; }
+    public int DepartmentId { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public string DepartmentName { get; set; } = string.Empty;
 
     public int StudentCount { get; set; }
 }

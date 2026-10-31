@@ -1,40 +1,98 @@
-/*using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebApiPractice.DTOs;
 using WebApiPractice.Services;
 
 namespace WebApiPractice.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class DepartmentsController(IDepartmentService service) : ControllerBase
+[Route("api/departments")]
+public class DepartmentsController : ControllerBase
 {
+    private readonly IDepartmentService _departmentService;
+
+    public DepartmentsController(IDepartmentService departmentService)
+    {
+        _departmentService = departmentService;
+    }
+
     [HttpGet]
-    public Task<PagedResult<DepartmentDto>> GetAll(int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default) =>
-        service.GetPagedAsync(pageNumber, pageSize, cancellationToken);
+    public async Task<IActionResult> GetAllDepartments()
+    {
+        var departments = await _departmentService.GetAllDepartmentsAsync();
+
+        return Ok(departments);
+    }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<DepartmentDto>> GetById(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetDepartmentById(int id)
     {
-        var department = await service.GetByIdAsync(id, cancellationToken);
-        return department is null ? NotFound() : Ok(department);
+        var department = await _departmentService.GetDepartmentByIdAsync(id);
+
+        if (department is null)
+            return NotFound(new { message = "Department not found." });
+
+        return Ok(department);
     }
 
     [HttpPost]
-    public async Task<ActionResult<DepartmentDto>> Create(CreateDepartmentDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateDepartment(
+        [FromBody] CreateDepartmentDto dto)
     {
-        var department = await service.CreateAsync(dto, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
+        try
+        {
+            var department = await _departmentService.CreateDepartmentAsync(dto);
+
+            return CreatedAtAction(
+                nameof(GetDepartmentById),
+                new { id = department.DepartmentId },
+                department);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<DepartmentDto>> Update(int id, CreateDepartmentDto dto, CancellationToken cancellationToken) =>
-        Ok(await service.UpdateAsync(id, dto, cancellationToken));
+    public async Task<IActionResult> UpdateDepartment(
+        int id,
+        [FromBody] CreateDepartmentDto dto)
+    {
+        try
+        {
+            var department = await _departmentService.UpdateDepartmentAsync(id, dto);
+
+            if (department is null)
+                return NotFound(new { message = "Department not found." });
+
+            return Ok(department);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
+    }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteDepartment(int id)
     {
-        await service.DeleteAsync(id, cancellationToken);
-        return NoContent();
+        var result = await _departmentService.DeleteDepartmentAsync(id);
+
+        return result switch
+        {
+            DepartmentDeleteResult.NotFound =>
+                NotFound(new { message = "Department not found." }),
+
+            DepartmentDeleteResult.HasStudents =>
+                Conflict(new
+                {
+                    message = "Cannot delete a department that has students assigned to it."
+                }),
+
+            DepartmentDeleteResult.Deleted =>
+                NoContent(),
+
+            _ => StatusCode(500)
+        };
     }
 }
-*/

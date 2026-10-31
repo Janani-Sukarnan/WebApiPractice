@@ -1,6 +1,85 @@
 [
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "GetAllDepartments",
+    "RelativePath": "api/departments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "CreateDepartment",
+    "RelativePath": "api/departments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WebApiPractice.DTOs.CreateDepartmentDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "GetDepartmentById",
+    "RelativePath": "api/departments/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "UpdateDepartment",
+    "RelativePath": "api/departments/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WebApiPractice.DTOs.CreateDepartmentDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.DepartmentsController",
+    "Method": "DeleteDepartment",
+    "RelativePath": "api/departments/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "GetAllStudents",
     "RelativePath": "api/students",
     "HttpMethod": "GET",
@@ -20,7 +99,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "AddStudent",
     "RelativePath": "api/students",
     "HttpMethod": "POST",
@@ -46,7 +125,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "GetStudents",
     "RelativePath": "api/students",
     "HttpMethod": "GET",
@@ -97,7 +176,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "GetStudentById",
     "RelativePath": "api/students/{id}",
     "HttpMethod": "GET",
@@ -123,7 +202,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "UpdateStudent",
     "RelativePath": "api/students/{id}",
     "HttpMethod": "PUT",
@@ -154,7 +233,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "DeleteStudent",
     "RelativePath": "api/students/{id}",
     "HttpMethod": "DELETE",
@@ -170,7 +249,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "GetStudentsByDepartment",
     "RelativePath": "api/students/department",
     "HttpMethod": "GET",
@@ -196,7 +275,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "GetPagedStudents",
     "RelativePath": "api/students/paged",
     "HttpMethod": "GET",
@@ -227,7 +306,7 @@
     ]
   },
   {
-    "ContainingType": "WebApiPractice.Controllers.StudentController",
+    "ContainingType": "WebApiPractice.Controllers.StudentsController",
     "Method": "SearchStudents",
     "RelativePath": "api/students/search",
     "HttpMethod": "GET",

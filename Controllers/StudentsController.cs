@@ -6,11 +6,11 @@ namespace WebApiPractice.Controllers;
 
 [ApiController]
 [Route("api/students")]
-public class StudentController : ControllerBase
+public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
 
-    public StudentController(IStudentService studentService)
+    public StudentsController(IStudentService studentService)
     {
         _studentService = studentService;
     }
@@ -131,6 +131,7 @@ public class StudentController : ControllerBase
 
         return NoContent();
     }
+
     [HttpGet("search")]
     public async Task<ActionResult<List<StudentDto>>> SearchStudents(
     [FromQuery] string key)
@@ -142,6 +143,7 @@ public class StudentController : ControllerBase
 
         return Ok(students);
     }
+
     [HttpGet("department")]
     public async Task<ActionResult<List<StudentDto>>> GetStudentsByDepartment(
     [FromQuery] int departmentId)
@@ -172,6 +174,7 @@ public class StudentController : ControllerBase
 
         return Ok(result);
     }
+
     [HttpGet]
     public async Task<ActionResult<PagedResult<StudentDto>>> GetStudents(
     [FromQuery] string? search = null,
@@ -218,4 +221,3 @@ public class StudentController : ControllerBase
         return Ok(result);
     }
 }
-

@@ -1,59 +1,116 @@
-/*using WebApiPractice.DTOs;
+using WebApiPractice.DTOs;
 using WebApiPractice.Models;
 using WebApiPractice.Repositories;
 
 namespace WebApiPractice.Services;
 
-public class DepartmentService(IDepartmentRepository repository) : IDepartmentService
+public class DepartmentService : IDepartmentService
 {
-    public async Task<PagedResult<DepartmentDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    private readonly IDepartmentRepository _repository;
+
+    public DepartmentService(IDepartmentRepository repository)
     {
-        ValidatePage(pageNumber, pageSize);
-        var (items, totalCount) = await repository.GetPagedAsync(pageNumber, pageSize, cancellationToken);
-        return new PagedResult<DepartmentDto>
+        _repository = repository;
+    }
+
+    public async Task<List<DepartmentDto>> GetAllDepartmentsAsync()
+    {
+        var departments = await _repository.GetAllAsync();
+
+        return departments.Select(d => new DepartmentDto
         {
-            Items = items.Select(Map).ToList(), PageNumber = pageNumber, PageSize = pageSize, TotalCount = totalCount
+            DepartmentId = d.DepartmentId,
+            DepartmentName = d.DepartmentName,
+            StudentCount = d.Students.Count
+        }).ToList();
+    }
+
+    public async Task<DepartmentDto?> GetDepartmentByIdAsync(int id)
+    {
+        var department = await _repository.GetByIdAsync(id);
+
+        if (department is null)
+            return null;
+
+        return new DepartmentDto
+        {
+            DepartmentId = department.DepartmentId,
+            DepartmentName = department.DepartmentName,
+            StudentCount = department.Students.Count
         };
     }
 
-    public async Task<DepartmentDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<DepartmentDto> CreateDepartmentAsync(
+        CreateDepartmentDto dto)
     {
-        var department = await repository.GetByIdAsync(id, cancellationToken);
-        return department is null ? null : Map(department);
+        var departmentName = dto.DepartmentName.Trim();
+
+        if (await _repository.ExistsByNameAsync(departmentName))
+        {
+            throw new InvalidOperationException(
+                "A department with this name already exists.");
+        }
+
+        var department = new Department
+        {
+            DepartmentName = departmentName
+        };
+
+        await _repository.AddAsync(department);
+
+        return new DepartmentDto
+        {
+            DepartmentId = department.DepartmentId,
+            DepartmentName = department.DepartmentName,
+            StudentCount = 0
+        };
     }
 
-    public async Task<DepartmentDto> CreateAsync(CreateDepartmentDto dto, CancellationToken cancellationToken)
+    public async Task<DepartmentDto?> UpdateDepartmentAsync(
+        int id,
+        CreateDepartmentDto dto)
     {
-        var department = new Department { Name = dto.Name.Trim() };
-        await repository.AddAsync(department, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
-        return Map(department);
+        var department = await _repository.GetByIdAsync(id);
+
+        if (department is null)
+            return null;
+
+        var departmentName = dto.DepartmentName.Trim();
+
+        if (!string.Equals(
+                department.DepartmentName,
+                departmentName,
+                StringComparison.OrdinalIgnoreCase)
+            && await _repository.ExistsByNameAsync(departmentName))
+        {
+            throw new InvalidOperationException(
+                "A department with this name already exists.");
+        }
+
+        department.DepartmentName = departmentName;
+
+        await _repository.UpdateAsync(department);
+
+        return new DepartmentDto
+        {
+            DepartmentId = department.DepartmentId,
+            DepartmentName = department.DepartmentName,
+            StudentCount = department.Students.Count
+        };
     }
 
-    public async Task<DepartmentDto> UpdateAsync(int id, CreateDepartmentDto dto, CancellationToken cancellationToken)
+    public async Task<DepartmentDeleteResult> DeleteDepartmentAsync(int id)
     {
-        var department = await repository.GetByIdAsync(id, cancellationToken) ?? throw new KeyNotFoundException("Department not found.");
-        department.Name = dto.Name.Trim();
-        repository.Update(department);
-        await repository.SaveChangesAsync(cancellationToken);
-        return Map(department);
-    }
+        var department = await _repository.GetByIdAsync(id);
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
-    {
-        var department = await repository.GetByIdAsync(id, cancellationToken) ?? throw new KeyNotFoundException("Department not found.");
-        repository.Delete(department);
-        await repository.SaveChangesAsync(cancellationToken);
-    }
+        if (department is null)
+            return DepartmentDeleteResult.NotFound;
 
-    private static DepartmentDto Map(Department department) => new()
-    {
-        Id = department.Id, Name = department.Name, StudentCount = department.Students.Count
-    };
+        if (department.Students.Any())
+            return DepartmentDeleteResult.HasStudents;
 
-    private static void ValidatePage(int pageNumber, int pageSize)
-    {
-        if (pageNumber < 1 || pageSize is < 1 or > 100) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page number must be positive and page size must be between 1 and 100.");
+        await _repository.DeleteAsync(department);
+
+        return DepartmentDeleteResult.Deleted;
     }
 }
-*/

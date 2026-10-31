@@ -4,11 +4,15 @@ namespace WebApiPractice.Repositories;
 
 public interface IDepartmentRepository
 {
-    Task<(IReadOnlyList<Department> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
-    Task<Department?> GetByIdAsync(int id, CancellationToken cancellationToken);
-    Task AddAsync(Department department, CancellationToken cancellationToken);
-    void Update(Department department);
-    void Delete(Department department);
-    Task<bool> ExistsAsync(int id, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<List<Department>> GetAllAsync();
+
+    Task<Department?> GetByIdAsync(int id);
+
+    Task<bool> ExistsByNameAsync(string departmentName);
+
+    Task AddAsync(Department department);
+
+    Task UpdateAsync(Department department);
+
+    Task DeleteAsync(Department department);
 }
